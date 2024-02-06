@@ -1,0 +1,3 @@
+witness_config:
+  WITNESS_ID: xx123
+  WITNESS_PRIVATE_KEY: 123

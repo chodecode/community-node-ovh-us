@@ -1,0 +1,12 @@
+---
+releases:
+  - name: root
+    chart: ./charts/root
+
+  - name: rsquared.witness
+    namespace: blockchain
+    chart: ./charts/rsquared.witness
+    values:
+      - witness_config:
+          WITNESS_ID: {{ requiredEnv "WITNESS_ID" }}
+          WITNESS_PRIVATE_KEY: {{ requiredEnv "WITNESS_PRIVATE_KEY" }}

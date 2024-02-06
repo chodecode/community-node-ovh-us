@@ -1,0 +1,28 @@
+name: infrastructure_down
+on:
+  workflow_dispatch:
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: ./infra
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v3
+      - name: init
+        run: terraform init
+      - name: replace desired nodes
+        run: |
+          sed -i 's/desired_nodes = 1/desired_nodes = 0/' ./kubernetes.tf
+      - name: apply
+        env:
+          OVH_APPLICATION_KEY: ${{ secrets.OVH_APPLICATION_KEY }}
+          OVH_APPLICATION_SECRET: ${{ secrets.OVH_APPLICATION_SECRET }}
+          OVH_CONSUMER_KEY: ${{ secrets.OVH_CONSUMER_KEY }}
+        run: terraform apply -auto-approve
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          file_pattern: "*.tfstate"
